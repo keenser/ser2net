@@ -1,0 +1,19 @@
+{
+	"app": {
+		"background": {
+			"scripts": [ "js/background.js" ]
+		}
+	},
+	"description": "Share serial port to network",
+	"icons": {
+		"128": "images/icon-128.png",
+		"32": "images/icon-32.png",
+		"16": "images/icon-16.png"
+	},
+	"manifest_version": 2,
+	"minimum_chrome_version": "25",
+	"name": "Serial to Network",
+	"offline_enabled": true,
+	"permissions": [ "clipboardRead", "clipboardWrite", "storage", "serial" ],
+	"version": "1.0.0"
+}
