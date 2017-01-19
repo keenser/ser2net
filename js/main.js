@@ -204,8 +204,8 @@ Application.prototype.run = function() {
 };
 
 function Echo(args) {
-    this.args = args;
-    this.io = null;
+    this.argString = args.argString;
+    this.io = args.io;
 }
 
 Echo.prototype.sendString_ = function(fromKeyboard, string) {
@@ -214,7 +214,6 @@ Echo.prototype.sendString_ = function(fromKeyboard, string) {
 
 Echo.prototype.run = function() {
     let self = this;
-    this.io = this.args.io.push();
 
     this.io.onVTKeystroke = this.sendString_.bind(this, true /* fromKeyboard */);
     this.io.sendString = this.sendString_.bind(this, false /* fromKeyboard */);
@@ -223,6 +222,11 @@ Echo.prototype.run = function() {
 function Terminal(nav_tabs, tab_content) {
     this.nav_tabs = document.getElementById(nav_tabs);
     this.tab_content = document.getElementById(tab_content);
+    chrome.commands.onCommand.addListener(this.commandListener);
+}
+
+Terminal.prototype.commandListener = function(command) {
+    console.log('command', command, this);
 }
 
 Terminal.prototype.new = function(name) {
@@ -258,6 +262,33 @@ window.onload = function() {
     terminal.new('t1');
     terminal.new('t2');
 
+    let ws = new WS("ws://nuc.grsk.eu.org:8881",
+    function () {
+        console.log('ws connected');
+    },
+    function () {
+        console.log('ws disconnected');
+    },
+    function (message) {
+        console.log('ws message', message);
+    }
+    );
+    ws.connect();
+
+//document.onkeydown = function (e) {
+//console.log('key', e);
+//    e = e || window.event;//Get event
+//    if (e.ctrlKey) {
+//        var c = e.which || e.keyCode;//Get key code
+//        switch (c) {
+//            case 83://Block Ctrl+S
+//            case 87://Block Ctrl+W --Not work in Chrome
+//                e.preventDefault();     
+//                e.stopPropagation();
+//            break;
+//        }
+//    }
+//};
     //var term = new hterm.Terminal("opt_serial_term");
     //var div = document.getElementById('serial1')
     //term.decorate(div);

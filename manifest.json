@@ -15,5 +15,31 @@
 	"name": "Serial to Network",
 	"offline_enabled": true,
 	"permissions": [ "clipboardRead", "clipboardWrite", "storage", "serial" ],
+	"commands": {
+		"next-tab": {
+			"suggested_key": {
+				"default": "Ctrl+Right"
+			},
+			"description": "Switch to next Tab"
+		},
+		"previous-tab": {
+			"suggested_key": {
+				"default": "Ctrl+Left"
+			},
+			"description": "Switch to previous Tab"
+		},
+		"new-tab": {
+			"suggested_key": {
+				"default": "Ctrl+T"
+			},
+			"description": "New Tab"
+		},
+		"close-tab": {
+			"suggested_key": {
+				"default": "Ctrl+W"
+			},
+			"description": "Close active Tab"
+		}
+	},
 	"version": "1.0.0"
 }
