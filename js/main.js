@@ -1,22 +1,22 @@
 function ab2str(buf) {
-  return String.fromCharCode.apply(null, new Uint8Array(buf));
+    return String.fromCharCode.apply(null , new Uint8Array(buf));
 }
 
 var str2ab = function(str) {
-  var buf = new ArrayBuffer(str.length);
-  var bufView = new Uint8Array(buf);
-  for (var i=0; i<str.length; i++) {
-    bufView[i] = str.charCodeAt(i);
-  }
-  return buf;
+    var buf = new ArrayBuffer(str.length);
+    var bufView = new Uint8Array(buf);
+    for (var i = 0; i < str.length; i++) {
+        bufView[i] = str.charCodeAt(i);
+    }
+    return buf;
 }
 
 var Application = function(argv) {
     this.argv = argv;
-    this.io = null;
-    this.keyboard_ = null;
-    this.connectionId = null;
-    this.portInfo_ = null;
+    this.io = null ;
+    this.keyboard_ = null ;
+    this.connectionId = null ;
+    this.portInfo_ = null ;
 
     this.PORT_KEY = 'port';
     this.BITRATE_KEY = 'bitrate';
@@ -26,62 +26,62 @@ var Application = function(argv) {
 }
 
 Application.prototype.sendString_ = function(fromKeyboard, string) {
-    if(this.isConnected()) {
-        chrome.serial.send(this.connectionId, str2ab(string), function () { });    
+    if (this.isConnected()) {
+        chrome.serial.send(this.connectionId, str2ab(string), function() {});
     }
-};
+}
 
 Application.prototype.isConnected = function() {
-    return this.connectionId !== null;
-};
+    return this.connectionId !== null ;
+}
 
 Application.prototype.exit = function(code) {
-};
+}
 
 Application.prototype.disconnect = function(callback) {
     var self = this;
     chrome.serial.disconnect(this.connectionId, function(result) {
         document.getElementById('app-connect').innerHTML = '<span class="glyphicon glyphicon-flash text-info"></span> Disconnected';
-        self.connectionId = null;
+        self.connectionId = null ;
         callback();
     });
-};
+}
 
 Application.prototype.reconnect = function() {
     var self = this;
     Application.prototype.disconnect.call(self, function() {
-        Application.prototype.connect.call(self);    
+        Application.prototype.connect.call(self);
     });
-};
+}
 
 Application.prototype.getSelectedOptions = function() {
     var e1 = document.getElementById('port-picker'),
-        e2 = document.getElementById('baudrate-picker'),
-        e3 = document.getElementById('databits-picker'),
-        e4 = document.getElementById('parity-picker'),
-        e5 = document.getElementById('stopbits-picker'),
-        port = e1.options[e1.selectedIndex].value,
-        baudrate = parseInt(e2.options[e2.selectedIndex].value),
-        dataBits = e3.options[e3.selectedIndex].value,
-        parityBit = e4.options[e4.selectedIndex].value,
-        stopBits = e5.options[e5.selectedIndex].value,
-        opts = {};
-        opts[this.PORT_KEY] = port;
-        opts[this.BITRATE_KEY] = baudrate;
-        opts[this.DATABITS_KEY] = dataBits;
-        opts[this.PARITY_KEY] = parityBit;
-        opts[this.STOPBITS_KEY] = stopBits;
+    e2 = document.getElementById('baudrate-picker'),
+    e3 = document.getElementById('databits-picker'),
+    e4 = document.getElementById('parity-picker'),
+    e5 = document.getElementById('stopbits-picker'),
+    port = e1.options[e1.selectedIndex].value,
+    baudrate = parseInt(e2.options[e2.selectedIndex].value),
+    dataBits = e3.options[e3.selectedIndex].value,
+    parityBit = e4.options[e4.selectedIndex].value,
+    stopBits = e5.options[e5.selectedIndex].value,
+    opts = {};
+    opts[this.PORT_KEY] = port;
+    opts[this.BITRATE_KEY] = baudrate;
+    opts[this.DATABITS_KEY] = dataBits;
+    opts[this.PARITY_KEY] = parityBit;
+    opts[this.STOPBITS_KEY] = stopBits;
     return opts;
-};
+}
 
 Application.prototype.connect = function() {
     var self = this
-        opts = Application.prototype.getSelectedOptions.call(this),
-        port = opts.port;
+    opts = Application.prototype.getSelectedOptions.call(this),
+    port = opts.port;
 
     delete opts.port;
 
-    if(this.connectionId === null) {
+    if (this.connectionId === null ) {
         chrome.serial.connect(port, opts, function(info) {
             document.getElementById('app-connect').innerHTML = '<span class="glyphicon glyphicon-flash text-warning"></span> Connected';
             self.connectionId = info.connectionId;
@@ -98,11 +98,11 @@ Application.prototype.getSerialDevices = function() {
         if (eligiblePorts.length > 0) {
             eligiblePorts.forEach(function(portObj) {
                 var portPicker = document.getElementById('port-picker');
-                portPicker.innerHTML = portPicker.innerHTML + '<option value="' + portObj.path +'">' + portObj.displayName + ' (' + portObj.path + ')</option>';
+                portPicker.innerHTML = portPicker.innerHTML + '<option value="' + portObj.path + '">' + portObj.displayName + ' (' + portObj.path + ')</option>';
             });
         }
     });
-};
+}
 
 Application.prototype.loadOptions = function() {
     var self = this;
@@ -135,11 +135,11 @@ Application.prototype.loadOptions = function() {
         if (result.hasOwnProperty(self.STOPBITS_KEY) !== undefined) {
             document.querySelector('#stopbits-picker').value = result[self.STOPBITS_KEY];
         } else {
-            
+
             document.querySelector('#stopbits-picker').value = "one";
         }
     });
-};
+}
 
 Application.prototype.saveOptions = function() {
     var opts = Application.prototype.getSelectedOptions.call(this);
@@ -160,14 +160,14 @@ Application.prototype.run = function() {
         }
     });
 
-    chrome.serial.onReceiveError.addListener(function (e) {
+    chrome.serial.onReceiveError.addListener(function(e) {
         /*
             Check and handle more error codes here!
         */
 
-        switch(e.error) {
-            case 'break':
-                Application.prototype.reconnect.call(self);
+        switch (e.error) {
+        case 'break':
+            Application.prototype.reconnect.call(self);
             break;
         }
     });
@@ -176,12 +176,13 @@ Application.prototype.run = function() {
     Application.prototype.loadOptions.call(self);
 
     document.getElementById('app-menu').onclick = function() {
-        if(document.getElementById("app-sidemenu").className) {
-            if(self.connectionId !== null) {
+        if (document.getElementById("app-sidemenu").className) {
+            if (self.connectionId !== null ) {
                 var opts = Application.prototype.getSelectedOptions.call(self);
                 delete opts.port;
                 chrome.serial.update(self.connectionId, opts, function() {
-                    // 
+                //
+
                 });
             }
 
@@ -190,18 +191,18 @@ Application.prototype.run = function() {
             document.getElementById("app-sidemenu").className = "active";
             Application.prototype.getSerialDevices.call(self);
         }
-    };
+    }
 
     document.getElementById('app-connect').onclick = function() {
         Application.prototype.saveOptions.call(self);
 
-        if(Application.prototype.isConnected.call(self)) {
+        if (Application.prototype.isConnected.call(self)) {
             Application.prototype.disconnect.call(self);
         } else {
             Application.prototype.connect.call(self);
         }
-    };
-};
+    }
+}
 
 function Echo(args) {
     this.argString = args.argString;
@@ -210,7 +211,7 @@ function Echo(args) {
 
 Echo.prototype.sendString_ = function(fromKeyboard, string) {
     this.io.print(string);
-};
+}
 
 Echo.prototype.run = function() {
     let self = this;
@@ -222,11 +223,24 @@ Echo.prototype.run = function() {
 function Terminal(nav_tabs, tab_content) {
     this.nav_tabs = document.getElementById(nav_tabs);
     this.tab_content = document.getElementById(tab_content);
-    chrome.commands.onCommand.addListener(this.commandListener);
+    this.tabs = {};
+    this.active_tab = null ;
+    chrome.commands.onCommand.addListener(this.commandListener.bind(this));
 }
 
 Terminal.prototype.commandListener = function(command) {
-    console.log('command', command, this);
+    if (command === 'next-tab') {
+        if (this.active_tab) {
+            $(this.active_tab.right).tab("show");
+        }
+    }
+
+    else if (command === 'previous-tab') {
+        if (this.active_tab) {
+            $(this.active_tab.left).tab("show");
+
+        }
+    }
 }
 
 Terminal.prototype.new = function(name) {
@@ -247,48 +261,68 @@ Terminal.prototype.new = function(name) {
     term.decorate(div);
 
     $(a).on("shown.bs.tab", function(event) {
-      div.focus();
+        self.active_tab = self.tabs[name];
+        div.focus();
     });
+    if (Object.keys(this.tabs).length === 0 ) {
+        this.tabs[name] = {
+            'self': a,
+            'left': a,
+            'right': a
+        };
+    }
 
+    else {
+        this.tabs[name] = {
+            'self': a,
+            'left': this.active_tab.self,
+            'right': this.active_tab.right
+        };
+        this.tabs[this.active_tab.right.textContent].left = a;
+        this.active_tab.right = a;
+    }
+    console.log('tabs', this.tabs, 'active_tab', this.active_tab);
+    $(a).tab("show");
     term.onTerminalReady = function() {
         term.runCommandClass(Echo, document.location.hash.substr(1));
         return true;
-    };
+    }
 }
 
 window.onload = function() {
     hterm.defaultStorage = new lib.Storage.Chrome(chrome.storage.local);
-    let terminal = new Terminal("nav-tabs", "tab-content");
+    let terminal = new Terminal("nav-tabs","tab-content");
     terminal.new('t1');
     terminal.new('t2');
 
     let ws = new WS("ws://nuc.grsk.eu.org:8881",
-    function () {
+    function() {
         console.log('ws connected');
     },
-    function () {
+    function() {
         console.log('ws disconnected');
     },
-    function (message) {
+    function(message) {
         console.log('ws message', message);
     }
     );
     ws.connect();
 
-//document.onkeydown = function (e) {
-//console.log('key', e);
-//    e = e || window.event;//Get event
-//    if (e.ctrlKey) {
-//        var c = e.which || e.keyCode;//Get key code
-//        switch (c) {
-//            case 83://Block Ctrl+S
-//            case 87://Block Ctrl+W --Not work in Chrome
-//                e.preventDefault();     
-//                e.stopPropagation();
-//            break;
-//        }
-//    }
-//};
+    //document.onkeydown = function (e) {
+    //console.log('key', e);
+    //    e = e || window.event;//Get event
+    //    if (e.ctrlKey) {
+    //        var c = e.which || e.keyCode;//Get key code
+    //        switch (c) {
+    //            case 83://Block Ctrl+S
+    //            case 87://Block Ctrl+W --Not work in Chrome
+    //                e.preventDefault();
+
+    //                e.stopPropagation();
+    //            break;
+    //        }
+    //    }
+    //};
     //var term = new hterm.Terminal("opt_serial_term");
     //var div = document.getElementById('serial1')
     //term.decorate(div);
@@ -316,4 +350,4 @@ window.onload = function() {
     //        window.chrome.app.window.current().maximize();
     //    }
     //};
-};
+}
